@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
-from app.utils import send_contact_email
+# from app.utils import send_contact_email
 from .. import models, schemas, database, oauth2
 # from ..email_utils import send_contact_email
 
