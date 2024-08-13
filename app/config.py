@@ -1,3 +1,4 @@
+import os
 from pydantic_settings import BaseSettings
 
 #set env variables
@@ -16,5 +17,16 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
+class Settings_email(BaseSettings):
+    EMAIL_HOST: str
+    EMAIL_PORT: int
+    EMAIL_HOST_USER: str
+    EMAIL_HOST_PASSWORD: str
+    EMAIL_FROM: str
+    EMAIL_TO: str
 
+    class Config:
+        env_file = ".env"
+
+settings_email = Settings_email()
 settings = Settings()
