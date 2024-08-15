@@ -20,7 +20,10 @@ def create_contact(contact: schemas.ContactCreate, db: Session = Depends(databas
     
     if current_user:
         contact_data.update({"user_id": current_user.id, "name": current_user.name, "email": current_user.email})
-    
+    else:
+        # Utilizatorii neautentificați trebuie să furnizeze aceste informații
+        if not contact_data.get("name") or not contact_data.get("email"):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name and email please!")
     new_contact = models.Contacts(**contact_data)
     db.add(new_contact)
     db.commit()

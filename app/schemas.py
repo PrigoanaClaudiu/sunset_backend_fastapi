@@ -58,15 +58,54 @@ class TokenData(BaseModel):
 
 # contacts
 class ContactBase(BaseModel):
-    name: str
-    email: EmailStr
     message: str
     phone_nr: str
 
 class ContactCreate(ContactBase):
-    pass
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
 
 class Contact(ContactBase):
     id: int
     user_id: Optional[int]
+    name: str  
+    email: EmailStr  
+    created_at: datetime
+
+
+# reservations
+# class ReservationBase(BaseModel):
+#     name: str
+#     email: EmailStr
+#     phone_nr: str
+#     details: str
+#     no_pers: int
+#     data_start: datetime
+#     data_finish: datetime
+
+
+# class ReservationCreate(ReservationBase):
+#     pass
+
+# class Reservation(ReservationBase):
+#     id: int
+#     user_id: Optional[int]
+#     created_at: datetime
+
+class ReservationBase(BaseModel):
+    no_pers: int
+    details: Optional[str] = None
+    phone_nr: str
+    data_start: datetime
+    data_finish: datetime
+
+class ReservationCreate(ReservationBase):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+
+class Reservation(ReservationBase):
+    id: int
+    user_id: Optional[int]
+    name: str 
+    email: EmailStr  
     created_at: datetime

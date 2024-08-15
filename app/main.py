@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from . import models
 from .database import engine
-from .routers import user, review, auth, contact
+from .routers import user, review, auth, contact, reservation
 from .config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-origins = ["https://www.google.com"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,6 +33,9 @@ app.include_router(auth.router)
 
 # router for contact
 app.include_router(contact.router)
+
+# router for reservation
+app.include_router(reservation.router)
 
 # path opperation
 @app.get("/")   #   decorator + "/path"
