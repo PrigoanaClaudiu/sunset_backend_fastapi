@@ -122,3 +122,13 @@ def update_review(id: int, review: schemas.ReviewUpdate, db: Session = Depends(g
     
     db.commit()
     return update_review_query.first()
+
+# to see if an user has already an review posted
+@router.get("/user-review", response_model=schemas.Review)
+def get_user_review(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    review = db.query(models.Review).filter(models.Review.user_id == current_user.id).first()
+
+    if not review:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User has not posted a review")
+    
+    return review
