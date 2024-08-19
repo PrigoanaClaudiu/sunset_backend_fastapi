@@ -42,6 +42,11 @@ class Review(BaseModel):
     rating: Optional[int] = Field(None, ge=1, le=5, description="Rating should be between 1 and 5")
     owner: UserOutForGet  #pydantic model
 
+class ReviewVerf(BaseModel):
+    id: int
+    user_id: int
+    content: str
+    rating: Optional[int] = Field(None, ge=1, le=5, description="Rating should be between 1 și 5")
 
 # login 
 class UserLogin(BaseModel):
