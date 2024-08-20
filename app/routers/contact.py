@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, Response, status, HTTPException
 from sqlalchemy.orm import Session
 
 # from app.utils import send_contact_email
@@ -33,21 +33,23 @@ def create_contact(contact: schemas.ContactCreate, db: Session = Depends(databas
     return new_contact
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_contact(id: int, db: Session = Depends(database.get_db), 
-                   current_user: models.User = Depends(oauth2.get_current_user)):
-    contact = db.query(models.Contact).filter(models.Contact.id == id).first()
+def delete_contact(id: int, db: Session = Depends(database.get_db)):
+    del_contact_query = db.query(models.Contacts).filter(models.Contacts.id == id)
 
-    if not contact:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Contact not found")
+    del_contact = del_contact_query.first()
 
-    db.delete(contact)
+    if del_contact == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
+                            detail=f'contact with id {id} was not found')
+
+    del_contact_query.delete(synchronize_session=False)
     db.commit()
+    # used when you don't want to send data back
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-    return {"message": "Contact deleted successfully"}
 
 # Adăugare rută pentru obținerea tuturor contactelor
 @router.get("/", response_model=List[schemas.Contact])
-def get_contacts(db: Session = Depends(database.get_db), 
-                 current_user: models.User = Depends(oauth2.get_current_user)):
-    contacts = db.query(models.Contact).all()
+def get_contacts(db: Session = Depends(database.get_db)):
+    contacts = db.query(models.Contacts).all()
     return contacts
