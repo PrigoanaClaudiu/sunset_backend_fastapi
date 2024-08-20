@@ -16,6 +16,7 @@ class UserOut(BaseModel):
     id: int
     email: EmailStr
     name: str
+    role: str
     # creaated_at: datetime
 
 class UserOutForGet(BaseModel):
