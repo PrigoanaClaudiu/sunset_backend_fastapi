@@ -59,6 +59,7 @@ class Token(BaseModel):
     token_type: str
     user_name: str
     user_email: str
+    role: str
 
 
 class TokenData(BaseModel):
