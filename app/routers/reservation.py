@@ -1,12 +1,24 @@
-from typing import Optional
+from typing import List, Optional
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 from .. import models, schemas, database, oauth2
+from datetime import datetime
 
 router = APIRouter(
     prefix="/reservations",
     tags=["Reservations"]
 )
+
+
+@router.get("/upcoming", response_model=List[schemas.Reservation])
+def get_upcoming_reservations(db: Session = Depends(database.get_db)):
+    today = datetime.now()
+    upcoming_reservations = db.query(models.Reservation).filter(models.Reservation.data_finish > today).all()
+
+    if not upcoming_reservations:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nu există rezervări viitoare.")
+
+    return upcoming_reservations
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Reservation)
 def create_reservation(reservation: schemas.ReservationCreate, db: Session = Depends(database.get_db),
