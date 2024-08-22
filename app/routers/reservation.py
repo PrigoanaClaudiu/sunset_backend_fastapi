@@ -9,6 +9,14 @@ router = APIRouter(
     tags=["Reservations"]
 )
 
+@router.get("/all", response_model=List[schemas.Reservation])
+def get_all_reservations(db: Session = Depends(database.get_db)):
+    all_reservations = db.query(models.Reservation).all()
+    if not all_reservations:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nu există rezervări.")
+    return all_reservations
+
+
 @router.post("/check_availability/")
 def check_availability(data_start: datetime, data_finish: datetime, db: Session = Depends(database.get_db)):
     conflicting_reservations = db.query(models.Reservation).filter(
