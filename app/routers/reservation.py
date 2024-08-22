@@ -9,6 +9,18 @@ router = APIRouter(
     tags=["Reservations"]
 )
 
+@router.post("/check_availability/")
+def check_availability(data_start: datetime, data_finish: datetime, db: Session = Depends(database.get_db)):
+    conflicting_reservations = db.query(models.Reservation).filter(
+        models.Reservation.data_start < data_finish,
+        models.Reservation.data_finish > data_start
+    ).all()
+
+    if conflicting_reservations:
+        return {"available": False, "conflicting_reservations": conflicting_reservations}
+
+    return {"available": True}
+
 
 @router.get("/upcoming", response_model=List[schemas.Reservation])
 def get_upcoming_reservations(db: Session = Depends(database.get_db)):
@@ -25,6 +37,11 @@ def create_reservation(reservation: schemas.ReservationCreate, db: Session = Dep
                    current_user: Optional[models.User] = Depends(oauth2.get_current_user_optional)):
     
     reservation_data = reservation.dict()
+
+    if db.query(models.Reservation).filter(
+        models.Reservation.data_start < reservation.data_finish,
+        models.Reservation.data_finish > reservation.data_start).count() > 0:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Date already booked.")
 
     if reservation.data_start > reservation.data_finish:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Data de început trebuie să fie înainte de data de sfârșit.")
