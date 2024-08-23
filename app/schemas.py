@@ -119,3 +119,7 @@ class Reservation(ReservationBase):
     name: str 
     email: EmailStr  
     created_at: datetime
+
+class AvailabilityRequest(BaseModel):
+    data_start: datetime
+    data_finish: datetime

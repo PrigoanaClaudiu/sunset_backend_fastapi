@@ -18,7 +18,10 @@ def get_all_reservations(db: Session = Depends(database.get_db)):
 
 
 @router.post("/check_availability/")
-def check_availability(data_start: datetime, data_finish: datetime, db: Session = Depends(database.get_db)):
+def check_availability(request: schemas.AvailabilityRequest, db: Session = Depends(database.get_db)):
+    data_start = request.data_start
+    data_finish = request.data_finish
+    
     conflicting_reservations = db.query(models.Reservation).filter(
         models.Reservation.data_start < data_finish,
         models.Reservation.data_finish > data_start
@@ -28,7 +31,6 @@ def check_availability(data_start: datetime, data_finish: datetime, db: Session 
         return {"available": False, "conflicting_reservations": conflicting_reservations}
 
     return {"available": True}
-
 
 @router.get("/upcoming", response_model=List[schemas.Reservation])
 def get_upcoming_reservations(db: Session = Depends(database.get_db)):
