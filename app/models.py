@@ -7,7 +7,6 @@ from sqlalchemy.orm import relationship
 class Review(Base):
     __tablename__ = "reviews"
 
-    #server_default='TRUE'
     id = Column(Integer, primary_key=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),nullable=False)
     content = Column(Text, nullable=False)
@@ -15,7 +14,6 @@ class Review(Base):
     created_at = Column(TIMESTAMP(timezone=True), 
                         nullable=False, server_default=text('now()'))
     
-    #relationship
     owner = relationship("User")
     
 class User(Base):

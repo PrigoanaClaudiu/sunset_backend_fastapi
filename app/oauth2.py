@@ -15,7 +15,6 @@ SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
-#every token will expire after 30 minutes - can decoded on jwt offical site
 def create_access_token(data: dict):
     to_encode = data.copy()
 
